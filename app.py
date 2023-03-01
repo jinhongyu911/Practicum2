@@ -36,9 +36,11 @@ st.subheader("""Car Type Distribution by Brand""")
 sorted_unique_manufacturer = sorted(vehicles['manufacturer'].unique())
 multi_select1 = st.multiselect('Select Manufacturer', sorted_unique_manufacturer, sorted_unique_manufacturer)
 df1 = vehicles[vehicles['manufacturer'].isin(multi_select1)]
-brand_by_type = pd.pivot_table(df1, values='price', index='manufacturer', columns='type', aggfunc='count')
+#brand_by_type = pd.pivot_table(df1, index='manufacturer', columns='type', values='price', aggfunc='count')
 #brand_by_type.plot(kind='bar', stacked=True, title='Car Type Distribution by Brand', figsize=[10, 5])
-st.bar_chart(brand_by_type)
+fig = px.bar(df1, x="manufacturer", color="type",
+             barmode="stack", title="Car Type Distribution by Brand")
+st.plotly_chart(fig)
 
 
 
@@ -48,7 +50,9 @@ multi_select2 = st.multiselect('Select Model Period (up to)', sorted_model_perio
 df2 = vehicles[vehicles['model_period'].isin(multi_select2)]
 mdyr_by_condition = pd.pivot_table(df2, index='model_year', columns='condition', values='price', aggfunc='count')
 #mdyr_by_condition.plot(kind='bar', stacked=True, title='Car Condition Distribution By Model Year', figsize=[10, 5])
-st.bar_chart(mdyr_by_condition)
+fig3 = px.bar(mdyr_by_condition, x=mdyr_by_condition.index,  y=mdyr_by_condition.columns,
+              barmode="stack", title="Car Condition Distribution By Model Year")
+st.plotly_chart(fig3)
 
 
 
