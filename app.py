@@ -10,7 +10,7 @@ US Vehicle Ad Data Analysis
 ***
 """)
 
-vehicles = pd.read_csv('C:/Users/Hongyu Jin/python/PracticumProject4/vehicles_us.csv')
+vehicles = pd.read_csv('vehicles_us.csv')
 vehicles['manufacturer'] = vehicles['model'].str.split().str[0]
 vehicles['model_year'] = vehicles['model_year'].fillna(1900).astype(np.int64)
 
@@ -38,8 +38,7 @@ multi_select1 = st.multiselect('Select Manufacturer', sorted_unique_manufacturer
 df1 = vehicles[vehicles['manufacturer'].isin(multi_select1)]
 #brand_by_type = pd.pivot_table(df1, index='manufacturer', columns='type', values='price', aggfunc='count')
 #brand_by_type.plot(kind='bar', stacked=True, title='Car Type Distribution by Brand', figsize=[10, 5])
-fig = px.bar(df1, x="manufacturer", color="type",
-             barmode="stack", title="Car Type Distribution by Brand")
+fig = px.bar(df1, x="manufacturer", color="type", barmode="stack")
 st.plotly_chart(fig)
 
 
@@ -50,9 +49,8 @@ multi_select2 = st.multiselect('Select Model Period (up to)', sorted_model_perio
 df2 = vehicles[vehicles['model_period'].isin(multi_select2)]
 mdyr_by_condition = pd.pivot_table(df2, index='model_year', columns='condition', values='price', aggfunc='count')
 #mdyr_by_condition.plot(kind='bar', stacked=True, title='Car Condition Distribution By Model Year', figsize=[10, 5])
-fig3 = px.bar(mdyr_by_condition, x=mdyr_by_condition.index,  y=mdyr_by_condition.columns,
-              barmode="stack", title="Car Condition Distribution By Model Year")
-st.plotly_chart(fig3)
+fig = px.bar(mdyr_by_condition, x=mdyr_by_condition.index,  y=mdyr_by_condition.columns, barmode="stack")
+st.plotly_chart(fig)
 
 
 
@@ -63,12 +61,17 @@ brand1_vehicles = vehicles[vehicles['manufacturer'] == brand1]
 brand2_vehicles = vehicles[vehicles['manufacturer'] == brand2]
 
 colors = ['#1f77b4', '#c23e3e']
-fig1 = px.histogram(brand1_vehicles, x='price', color_discrete_sequence=[colors[0]], opacity=0.8, nbins=20)
-fig2 = px.histogram(brand2_vehicles, x='price', color_discrete_sequence=[colors[1]], opacity=0.5, nbins=20)
+normalize = st.checkbox('Normalize histogram', value=True)
+if normalize:
+    histnorm = 'percent'
+else:
+    histnorm = None
+
+fig1 = px.histogram(brand1_vehicles, x='price', color_discrete_sequence=[colors[0]], opacity=0.8, nbins=20, histnorm=histnorm)
+fig2 = px.histogram(brand2_vehicles, x='price', color_discrete_sequence=[colors[1]], opacity=0.5, nbins=20, histnorm=histnorm)
+
 fig_combined = fig1.add_trace(fig2.data[0])
-#fig_combined.update_traces(name=[brand1, brand2])
-fig_combined.update_layout(barmode='overlay', xaxis_title='Price', yaxis_title='Count',
-                            title='Price Distribution by Brand')
+fig_combined.update_layout(barmode='overlay', xaxis_title='Price')
 st.plotly_chart(fig_combined)
 
 
