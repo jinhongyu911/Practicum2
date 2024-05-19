@@ -1,4 +1,4 @@
-# Practicum2
+# Project_02 - EDA & Streamlit
 
 The goal of project is to analyze the dataset ('vehicles_us'), create visualizations using plotly-express and streamlit,
 and finally build and deploy an interactive web application dashboard on Render platform.
